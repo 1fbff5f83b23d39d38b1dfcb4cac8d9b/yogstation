@@ -33,8 +33,10 @@
 	else if(istype(I, /obj/item/stack/sheet))
 		var/obj/item/stack/sheet/S = I
 		var/tobuild = null
+		var/buildspeed = 20
 		if(istype(I, /obj/item/stack/sheet/plasteel))
 			tobuild = /obj/structure/table/reinforced
+			buildspeed = 50
 		else if(istype(I, /obj/item/stack/sheet/metal))
 			tobuild = /obj/structure/table
 		else if(istype(I, /obj/item/stack/sheet/glass))
@@ -52,7 +54,7 @@
 				to_chat(user, "<span class='warning'>You can't build a table here, something is in the way!</span>")
 				return
 		to_chat(user, "<span class='notice'>You start adding [S] to [src]...</span>")
-		if(!(do_after(user, 50, target = src) && S.use(1)))
+		if(!(do_after(user, buildspeed, target = src) && S.use(1)))
 			return
 		new tobuild(src.loc)
 		qdel(src)
