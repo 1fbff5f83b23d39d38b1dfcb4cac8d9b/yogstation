@@ -85,6 +85,8 @@
 /obj/item/organ/brain/attack(mob/living/carbon/M, mob/user)
 	if(!istype(M))
 		return ..()
+	if(istype(M, /mob/living/carbon/brain))
+		return ..()
 
 	add_fingerprint(user)
 

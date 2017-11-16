@@ -29,47 +29,33 @@
 			for(var/i = 1, i <= framestackamount, i++)
 				new framestack(get_turf(src))
 			qdel(src)
-	else if(istype(I, /obj/item/stack/sheet/plasteel))
-		var/obj/item/stack/sheet/plasteel/P = I
-		if(P.get_amount() < 1)
-			to_chat(user, "<span class='warning'>You need one plasteel sheet to do this!</span>")
-			return
-		to_chat(user, "<span class='notice'>You start adding [P] to [src]...</span>")
-		if(do_after(user, 50, target = src))
-			P.use(1)
-			new /obj/structure/table/reinforced(src.loc)
-			qdel(src)
-	else if(istype(I, /obj/item/stack/sheet/metal))
-		var/obj/item/stack/sheet/metal/M = I
-		if(M.get_amount() < 1)
-			to_chat(user, "<span class='warning'>You need one metal sheet to do this!</span>")
-			return
-		to_chat(user, "<span class='notice'>You start adding [M] to [src]...</span>")
-		if(do_after(user, 20, target = src))
-			M.use(1)
-			new /obj/structure/table(src.loc)
-			qdel(src)
-	else if(istype(I, /obj/item/stack/sheet/glass))
-		var/obj/item/stack/sheet/glass/G = I
-		if(G.get_amount() < 1)
-			to_chat(user, "<span class='warning'>You need one glass sheet to do this!</span>")
-			return
-		to_chat(user, "<span class='notice'>You start adding [G] to [src]...</span>")
-		if(do_after(user, 20, target = src))
-			G.use(1)
 
-			new /obj/structure/table/glass(src.loc)
-			qdel(src)
-	else if(istype(I, /obj/item/stack/sheet/mineral/silver))
-		var/obj/item/stack/sheet/mineral/silver/S = I
-		if(S.get_amount() < 1)
-			to_chat(user, "<span class='warning'>You need one silver sheet to do this!</span>")
+	else if(istype(I, /obj/item/stack/sheet))
+		var/obj/item/stack/sheet/S = I
+		var/tobuild = null
+		if(istype(I, /obj/item/stack/sheet/plasteel))
+			tobuild = /obj/structure/table/reinforced
+		else if(istype(I, /obj/item/stack/sheet/metal))
+			tobuild = /obj/structure/table
+		else if(istype(I, /obj/item/stack/sheet/glass))
+			tobuild = /obj/structure/table/glass
+		else if(istype(I, /obj/item/stack/sheet/mineral/silver))
+			tobuild = /obj/structure/table/optable
+		else
+			to_chat(user, "<span class='warning'>You can't build a table using [S]!</span>")
 			return
+		if(S.get_amount() < 1)
+			to_chat(user, "<span class='warning'>You need one [S] sheet to do this!</span>")
+			return
+		for(var/atom/A in get_turf(src))
+			if(A.density)
+				to_chat(user, "<span class='warning'>You can't build a table here, something is in the way!</span>")
+				return
 		to_chat(user, "<span class='notice'>You start adding [S] to [src]...</span>")
-		if(do_after(user, 20, target = src))
-			S.use(1)
-			new /obj/structure/table/optable(src.loc)
-			qdel(src)
+		if(!(do_after(user, 50, target = src) && S.use(1)))
+			return
+		new tobuild(src.loc)
+		qdel(src)
 	else
 		return ..()
 

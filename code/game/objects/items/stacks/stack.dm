@@ -189,9 +189,14 @@
 		else
 			to_chat(usr, "<span class='warning'>You haven't got enough [src] to build \the [R.title]!</span>")
 		return 0
-	if(R.one_per_turf && (locate(R.result_type) in usr.loc))
-		to_chat(usr, "<span class='warning'>There is another [R.title] here!</span>")
-		return 0
+	if(R.one_per_turf)
+		if(locate(R.result_type) in usr.loc)
+			to_chat(usr, "<span class='warning'>There is another [R.title] here!</span>")
+			return 0
+		for(var/atom/A in get_turf(usr))
+			if(A.density && A != usr)
+				to_chat(usr, "<span class='warning'>You can't build \a [R.title] here, there is something in the way!</span>")
+				return 0
 	if(R.on_floor && !istype(usr.loc, /turf/open/floor))
 		to_chat(usr, "<span class='warning'>\The [R.title] must be constructed on the floor!</span>")
 		return 0

@@ -163,6 +163,10 @@
 					if(req_components[R] > 0)
 						component_check = 0
 						break
+				for(var/atom/A in get_turf(src))
+					if(A.density)
+						to_chat(user, "<span class='warning'>You can't finish the machine, there is something in the way!</span>")
+						return
 				if(component_check)
 					playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
 					var/obj/machinery/new_machine = new src.circuit.build_path(src.loc, 1)

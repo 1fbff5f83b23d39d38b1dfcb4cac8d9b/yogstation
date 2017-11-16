@@ -136,6 +136,9 @@
 			playsound(loc, 'sound/items/Wirecutter.ogg', 100, 1)
 			Deconstruct()
 	else if((istype(W, /obj/item/weapon/screwdriver)) && (istype(loc, /turf) || anchored))
+		if(!anchored && locate(/obj/structure/grille) in get_turf(src))
+			to_chat(user, "<span class='warning'>You can't fasten the grille, there already is one here!</span>")
+			return
 		if(!shock(user, 90))
 			playsound(loc, 'sound/items/Screwdriver.ogg', 100, 1)
 			anchored = !anchored
@@ -143,6 +146,9 @@
 								 "<span class='notice'>You [anchored ? "fasten [src] to" : "unfasten [src] from"] the floor.</span>")
 			return
 	else if(istype(W, /obj/item/stack/rods) && destroyed)
+		if(locate(/obj/structure/grille) in get_turf(src))
+			to_chat(user, "<span class='warning'>You can't rebuild the grille, there already is one here!</span>")
+			return
 		var/obj/item/stack/rods/R = W
 		if(!shock(user, 90))
 			user.visible_message("<span class='notice'>[user] rebuilds the broken grille.</span>", \
